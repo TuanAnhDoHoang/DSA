@@ -108,48 +108,103 @@ public:
             if(balance < -1 && data > currNode->right->value){
                 return L_rotate(currNode);
             }
-            if(balance < -1 && data < currNode->left->value){
+            if(balance < -1 && data < currNode->right->value){
                 currNode->right = R_rotate(currNode->right);
                 return L_rotate(currNode);
             }
         }
         return currNode;
     }
-    Node* del(Node* currNode, int data){
+    Node* getSuccessor(Node* currNode){
+        currNode = currNode->right;
+        while(currNode->left != NULL && currNode != NULL){
+            currNode = currNode->left;
+        }
+        return currNode;
+    }
+    Node* minValueNode(Node* node){
+        Node* currNode = node;
+        while(currNode != NULL && currNode->left != NULL){
+            currNode = currNode->left;
+        }
+        return currNode;
+    }
+    Node* del(Node* currNode, int data){ //Nút mới thay thế cho cha của CurrNode
+        if(currNode == NULL)return currNode;
         if(data < currNode->value){
-            currNode = del(currNode->left, data); 
+            currNode->left = del(currNode->left, data); 
         }
         if(data > currNode->value){
-            currNode = del(currNode->right, data);
+            currNode->right = del(currNode->right, data);
         }
         if(data == currNode->value){
-             
+            if(currNode->left == nullptr && currNode->right == nullptr){
+                delete(currNode);
+            }
+            if(currNode->left == nullptr || currNode->right == nullptr){
+                if(currNode->left == nullptr){
+                    Node* tmp = currNode->right;
+                    *currNode = *tmp;
+                    delete(tmp);
+                }
+                else if(currNode->right == nullptr){
+                    Node* tmp = currNode->left;
+                    *currNode = *tmp;
+                    delete(tmp);
+                }
+            }
+            else{
+                Node* succ = getSuccessor(currNode);
+                currNode->value = succ->value;
+                currNode->right = del(currNode->right, succ->value);
+            }
         }
+        if(currNode == nullptr){
+            return currNode;
+        }
+
+        currNode->height = 1+ max(getHeight(currNode->left), getHeight(currNode->right));
+        int balance = getBalance(currNode);
+
+
+        if(balance > 1 && getBalance(currNode->left) >= 0)// nghiên trái, trái
+        {
+            return R_rotate(currNode);
+        }
+        if(balance > 1 && getBalance(currNode->left) < 0) //Nghiên trái, phải
+        {
+            currNode = L_rotate(currNode->left);
+            return R_rotate(currNode);
+        }
+        if(balance < -1 && getBalance(currNode->right) <= 0) //Phai, phai
+        {
+            return L_rotate(currNode);
+        }
+        if(balance < -1 && getBalance(currNode->right) > 0)//phai, trai
+        {
+            currNode = R_rotate(currNode->right);
+            return L_rotate(currNode);
+        }
+        return currNode;
     }  
-    Node* find(int n, int data){
-        if(data == this->root->value)return this->root; vector<Node*> v;
-        v.push_back(this->root);
-        for(int i=0; i<n; i++){
-            if(v[i]->left != NULL){
-                if(v[i]->left->value == data)return v[i]->left;
-                v.push_back(v[i]->left);
-            }
-            if(v[i]->right != NULL){
-                if(v[i]->right->value == data)return v[i]->right;
-                v.push_back(v[i]->right);
-            }
-            if(v[i]->value == data)return v[i];
-        } 
-    }
     void print_tree(int n){
         vector<Node*> v;
         v.push_back(this->root);
         for(int i=0; i<n; i++){
-            if(v[i]->left != NULL)v.push_back(v[i]->left);
-            if(v[i]->right != NULL)v.push_back(v[i]->right);
-            cout<<v[i]->value<<" ";
+            if(v[i] != NULL){
+                if(v[i]->left != NULL)v.push_back(v[i]->left);
+                if(v[i]->right != nullptr)v.push_back(v[i]->right);
+                cout<<v[i]->value<<" ";
+            }
         } 
         cout<<endl;
+    }
+    void print_tree(Node* currNode){
+        if(currNode != nullptr){
+            cout<<currNode->value<<" ";
+            print_tree(currNode->left);
+            print_tree(currNode->right);
+        }
     }
 };
 int main(){
@@ -162,6 +217,11 @@ int main(){
     for(int i = 2; i <= n; i++){
         tree->root = tree->push(tree->root, input[i]);
     }
+    tree->print_tree(n); 
+    cout<<endl;
+    tree->root = tree->del(tree->root, 11);
+    n--;
+
     tree->print_tree(n); 
     return 0;
 }
