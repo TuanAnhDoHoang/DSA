@@ -9,8 +9,7 @@ Các thao tác xây dựng:
 
 Breakdown code: 
 1. Tạo class node chứa thuộc tính: dữ liệu (nút 5, nút 6, ...), nút con trái, nút con phải, chiều cao của nút tính từ gốc; Tạo hàm khởi tạo (Node)
-`
-class Node{
+`class Node{
     public:
         int value;
         Node* left;
