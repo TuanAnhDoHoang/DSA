@@ -9,6 +9,7 @@ Các thao tác xây dựng:
 
 Breakdown code: 
 1. Tạo class node chứa thuộc tính: dữ liệu (nút 5, nút 6, ...), nút con trái, nút con phải, chiều cao của nút tính từ gốc; Tạo hàm khởi tạo (Node)
+
 `class Node{
     public:
         int value;
@@ -27,6 +28,7 @@ Breakdown code:
 2.Xây dựng class cây AVL và một số chức năng (thêm node, xoá node, xoay cây, tính hệ số cân bằng, tính chiều cao của một node, In các node trên cây theo độ cao từ trái->phải)
 
 a) Hàm lấy chiều cao:
+
 `
  int getHeight(Node* x){
         if(x == NULL)return 0;
@@ -38,6 +40,7 @@ Ví dụ: node lá có chiều cao là 1, cha của node lá có chiều cao là
 
 
 b) Hàm lấy hệ số cân bằng:
+
 `
  int getBalance(Node* currNode){
         if(currNode == NULL)return maxn;
