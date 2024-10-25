@@ -10,6 +10,7 @@ Các thao tác xây dựng:
 Breakdown code: 
 `
 class Node{
+a
     public:
         int value;
         Node* left;
